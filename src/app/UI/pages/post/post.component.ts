@@ -39,6 +39,10 @@ export class PostComponent implements OnInit {
     this.getPostNgRx();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
 
   getPostNgRx(): void {
     this.store.dispatch(loadPost());
@@ -47,6 +51,7 @@ export class PostComponent implements OnInit {
         console.log('Valor de Post NgRx', resp);
         this.dataPost = resp;
         this.dataSource = new MatTableDataSource(this.dataPost);
+        this.dataSource.paginator = this.dataPost.length > 0 ? this.paginator : null;
       },
       error: (_error: HttpErrorResponse) => {
       },
