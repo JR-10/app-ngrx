@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PostGateway } from "../models/post/gateways/post.gateway";
+import { PostGateway } from "../../models/post/gateways/post.gateway";
 
 @Injectable({
   providedIn: 'root'

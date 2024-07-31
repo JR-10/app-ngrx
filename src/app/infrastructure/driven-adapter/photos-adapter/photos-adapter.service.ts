@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { PothosGateway } from '../../../domain/models/photos/gateways/pothos.gateway';
 import { environment } from '../../../environments/environment';
-import { Post } from '../../../domain/models/post/post.model';
-import { PostGateway } from '../../../domain/models/post/gateways/post.gateway';
+import { Pothos } from '../../../domain/models/photos/pothos.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class PostAdapterService extends PostGateway {
+export class PhotosAdapterService extends PothosGateway {
 
   private _apiUrl: string;
 
@@ -16,12 +17,11 @@ export class PostAdapterService extends PostGateway {
     private http: HttpClient
   ) {
     super();
-    this._apiUrl = `${environment.backend}posts`;
+    this._apiUrl = `${environment.backend}photos`;
   }
 
-  getPost(): Observable<Array<Post>> {
+  getPhotos(): Observable<Array<Pothos>> {
     const url = `${this._apiUrl}`;
-    return this.http.get<Array<Post>>(url);
+    return this.http.get<Array<Pothos>>(url);
   }
-
 }
