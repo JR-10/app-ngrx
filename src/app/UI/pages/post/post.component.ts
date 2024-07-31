@@ -24,7 +24,7 @@ export class PostComponent implements OnInit {
   dataPost: Array<Post> = [];
   postList$: Observable<Array<Post>>;
 
-  displayedColumns: string[] = ['userId', 'id', 'title', 'body'];
+  displayedColumns: string[] = [/*'userId',*/ 'id', 'title', 'body'];
   dataSource!: MatTableDataSource<Post>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
