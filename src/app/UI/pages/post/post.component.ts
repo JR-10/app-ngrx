@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { GetPostUsecase } from '../../../domain/usecase/get-post.usecase';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Post } from '../../../domain/models/post/post.model';
 import { select, Store } from '@ngrx/store';
-import { Observable, tap } from 'rxjs';
-import { selectPost, /*selectPostLoaded */} from '../../../core/store/selectors/post.selectors';
-import { loadPost, loadPostSuccess } from '../../../core/store/actions/post.actions';
+import { Observable } from 'rxjs';
+import { selectPost } from '../../../core/store/selectors/post.selectors';
+import { loadPost } from '../../../core/store/actions/post.actions';
 import { PostState } from '../../../core/store/reducers/post.reducers';
+
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss'
 })
@@ -20,9 +24,13 @@ export class PostComponent implements OnInit {
   dataPost: Array<Post> = [];
   postList$: Observable<Array<Post>>;
 
+  displayedColumns: string[] = ['userId', 'id', 'title', 'body'];
+  dataSource!: MatTableDataSource<Post>;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(
     private store: Store<PostState>,
-    // private getPostUsecase: GetPostUsecase,
   ) {
     this.postList$ = this.store.pipe(select(selectPost));
   }
@@ -38,12 +46,20 @@ export class PostComponent implements OnInit {
       next: (resp: Array<Post>) => {
         console.log('Valor de Post NgRx', resp);
         this.dataPost = resp;
+        this.dataSource = new MatTableDataSource(this.dataPost);
       },
       error: (_error: HttpErrorResponse) => {
       },
     });
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 
 }
