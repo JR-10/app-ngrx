@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PothosGateway } from '../../../domain/models/photos/gateways/pothos.gateway';
+import { PothosGateway } from '../../../domain/models/photos/gateways/photos.gateway';
 import { environment } from '../../../environments/environment';
-import { Pothos } from '../../../domain/models/photos/pothos.model';
+import { Photos } from '../../../domain/models/photos/photos.model';
 
 
 @Injectable({
@@ -20,8 +20,8 @@ export class PhotosAdapterService extends PothosGateway {
     this._apiUrl = `${environment.backend}photos`;
   }
 
-  getPhotos(): Observable<Array<Pothos>> {
+  getPhotos(): Observable<Array<Photos>> {
     const url = `${this._apiUrl}`;
-    return this.http.get<Array<Pothos>>(url);
+    return this.http.get<Array<Photos>>(url);
   }
 }

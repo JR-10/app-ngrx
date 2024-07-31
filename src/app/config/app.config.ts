@@ -10,8 +10,12 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideState, provideStore } from '@ngrx/store';
 import { postReducer } from '../core/store/reducers/post.reducers';
+import { photosReducer } from '../core/store/reducers/photos.reducers';
 import { provideEffects } from '@ngrx/effects';
 import { PostEffects } from '../core/store/effects/post.effects';
+import { PhotosEffects } from '../core/store/effects/photos.effects';
+import { PhotosAdapterService } from '../infrastructure/driven-adapter/photos-adapter/photos-adapter.service';
+import { PothosGateway } from '../domain/models/photos/gateways/photos.gateway';
 
 
 
@@ -22,9 +26,11 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimationsAsync(),
     { provide: PostGateway, useClass: PostAdapterService },
+    { provide: PothosGateway, useClass: PhotosAdapterService },
     provideStore(),
     provideState({name: 'post', reducer: postReducer}),
-    provideEffects(PostEffects),
+    provideState({name: 'photos', reducer: photosReducer}),
+    provideEffects([PostEffects, PhotosEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), trace: true }),
   ],
 };

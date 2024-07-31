@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PothosGateway } from "../../models/photos/gateways/pothos.gateway";
+import { PothosGateway } from "../../models/photos/gateways/photos.gateway";
 
 @Injectable({
   providedIn: 'root'
