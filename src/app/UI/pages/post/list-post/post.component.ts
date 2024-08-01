@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Post } from '../../../domain/models/post/post.model';
+import { Post } from '../../../../domain/models/post/post.model';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectPost } from '../../../core/store/selectors/post.selectors';
-import { deletePost, deletePostSuccess, loadPost } from '../../../core/store/actions/post.actions';
-import { PostState } from '../../../core/store/reducers/post.reducers';
+import { selectPost } from '../../../../core/store/selectors/post.selectors';
+import { deletePostSuccess, loadPost } from '../../../../core/store/actions/post.actions';
+import { PostState } from '../../../../core/store/reducers/post.reducers';
 
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -15,12 +15,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { MatDialog } from '@angular/material/dialog';
+import { CreatePostComponent } from '../create-post/create-post.component';
+import { UpdatePostComponent } from '../update-post/update-post.component';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatButtonModule],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss'
 })
@@ -36,6 +40,7 @@ export class PostComponent implements OnInit {
 
   constructor(
     private store: Store<PostState>,
+    public dialog: MatDialog,
   ) {
     this.postList$ = this.store.pipe(select(selectPost));
   }
@@ -53,7 +58,6 @@ export class PostComponent implements OnInit {
     this.store.dispatch(loadPost());
     this.postList$.subscribe({
       next: (resp: Array<Post>) => {
-        console.log('Valor de Post NgRx', resp);
         this.dataPost = resp;
         this.dataSource = new MatTableDataSource(this.dataPost);
         this.dataSource.paginator = this.dataPost.length > 0 ? this.paginator : null;
@@ -73,8 +77,27 @@ export class PostComponent implements OnInit {
   }
 
 
-  openDialog(row: any): void {
+  openDialogCreate(): void {
+    const dialogRef = this.dialog.open(CreatePostComponent, {
+      data: {},
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed: ', result);
+    });
+  }
+
+
+  openDialogUpdate(row: any): void {
     console.log('Valor de la fila', row);
+    const dialogRef = this.dialog.open(UpdatePostComponent, {
+      data: {},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed: ', result);
+    });
   }
 
   deletePost(id: number): void {

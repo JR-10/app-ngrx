@@ -49,7 +49,6 @@ export class PhotosComponent implements OnInit {
     this.store.dispatch(loadPhotos());
     this.photosList$.subscribe({
       next: (resp: Array<Photos>) => {
-        console.log('Valor de Photos NgRx', resp);
         this.dataPhotos = resp;
         this.dataSource = new MatTableDataSource(this.dataPhotos);
         this.dataSource.paginator = this.dataPhotos.length > 0 ? this.paginator : null;

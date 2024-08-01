@@ -8,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'post',
-    loadComponent: () => import('../UI/pages/post/post.component').then(m => m.PostComponent)
+    loadComponent: () => import('../UI/pages/post/list-post/post.component').then(m => m.PostComponent)
   },
 
   {
@@ -17,7 +17,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/',
     pathMatch: 'full'
   }
 
