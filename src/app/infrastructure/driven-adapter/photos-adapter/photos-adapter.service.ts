@@ -24,4 +24,5 @@ export class PhotosAdapterService extends PothosGateway {
     const url = `${this._apiUrl}`;
     return this.http.get<Array<Photos>>(url);
   }
+
 }

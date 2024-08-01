@@ -11,11 +11,13 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-photos',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './photos.component.html',
   styleUrl: './photos.component.scss'
 })
@@ -24,7 +26,7 @@ export class PhotosComponent implements OnInit {
   dataPhotos: Array<Photos> = [];
   photosList$: Observable<Array<Photos>>;
 
-  displayedColumns: string[] = [/*'albumId',*/ 'id', 'title', 'url', 'thumbnailUrl'];
+  displayedColumns: string[] = [/*'albumId',*/ 'id', 'title', 'url', 'thumbnailUrl', 'actions'];
   dataSource!: MatTableDataSource<Photos>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -64,5 +66,13 @@ export class PhotosComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  openDialogPhotos(row: any): void {
+    console.log('Valor de la fila', row);
+  }
+
+  deletePhotos(row: any): void {
+    console.log('Valor de la fila', row);
   }
 }

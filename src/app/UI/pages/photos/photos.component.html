@@ -5,7 +5,7 @@
 </mat-form-field>
 
 <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" matSort>
+  <table mat-table [dataSource]="dataSource">
 
     <!-- <ng-container matColumnDef="albumId">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Album Id </th>
@@ -29,8 +29,19 @@
 
     <ng-container matColumnDef="thumbnailUrl">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> ThumbnailUrl </th>
-      <!-- <td mat-cell *matCellDef="let row"> <img [src]="row.thumbnailUrl" width="100px" height="100px" alt="img" /></td> -->
       <td mat-cell *matCellDef="let row">{{row.thumbnailUrl}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button color="primary" (click)="openDialogPhotos(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deletePhotos(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

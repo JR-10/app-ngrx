@@ -24,4 +24,8 @@ export class PostAdapterService extends PostGateway {
     return this.http.get<Array<Post>>(url);
   }
 
+  deletePost(id: number): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
+
 }
