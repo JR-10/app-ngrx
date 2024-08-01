@@ -16,8 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { MatDialog } from '@angular/material/dialog';
-import { CreatePostComponent } from '../create-post/create-post.component';
-import { UpdatePostComponent } from '../update-post/update-post.component';
+import { ModalPostComponent } from '../modal-post/modal-post.component';
 import { MatButtonModule } from '@angular/material/button';
 
 
@@ -43,18 +42,16 @@ export class PostComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     this.postList$ = this.store.pipe(select(selectPost));
+    this.getPost();
   }
 
-  ngOnInit(): void {
-    this.getPostNgRx();
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
-
-  getPostNgRx(): void {
+  getPost(): void {
     this.store.dispatch(loadPost());
     this.postList$.subscribe({
       next: (resp: Array<Post>) => {
@@ -76,27 +73,11 @@ export class PostComponent implements OnInit {
     }
   }
 
-
-  openDialogCreate(): void {
-    const dialogRef = this.dialog.open(CreatePostComponent, {
-      data: {},
+  openDialog(post?: Post): void {
+    this.dialog.open(ModalPostComponent, {
+      data : post ? post : null,
+      width: '500px',
       disableClose: true,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed: ', result);
-    });
-  }
-
-
-  openDialogUpdate(row: any): void {
-    console.log('Valor de la fila', row);
-    const dialogRef = this.dialog.open(UpdatePostComponent, {
-      data: {},
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed: ', result);
     });
   }
 
@@ -120,6 +101,5 @@ export class PostComponent implements OnInit {
       }
     });
   }
-
 
 }

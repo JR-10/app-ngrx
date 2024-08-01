@@ -18,7 +18,7 @@ export const initialPostState: PostState = {
 
 export const postReducer = createReducer(
   initialPostState,
-  // Mostrar todos los post
+  // Load post
   on(PostActions.loadPost, state => {
     return { ...state, loading: true };
   }),
@@ -29,8 +29,19 @@ export const postReducer = createReducer(
     return { ...state, loading: false, payload: payload};
   }),
 
-  // Eliminar un post
-  on(PostActions.deletePost, (state) => {
+  // Create post
+  on(PostActions.createPost, state => {
+    return {...state, loading: true};
+  }),
+  on(PostActions.createPostSuccess, (state, {payload}) => {
+    return {...state, loading: false, data: payload};
+  }),
+  on(PostActions.createPostFailure, (state, { payload }) => {
+    return { ...state, loading: false, payload: payload};
+  }),
+
+  // Delete post
+  on(PostActions.deletePost, state => {
     return {...state, loading: true};
   }),
   on(PostActions.deletePostSuccess, (state, {payload}) => {

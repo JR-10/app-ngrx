@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Crete Post</h2>
+<h2 mat-dialog-title>{{ titleModal }}</h2>
 <form [formGroup]="formCreatePost" (ngSubmit)="onSubmit()" #form="ngForm">
 
   <mat-dialog-content>
@@ -24,6 +24,6 @@
 
   <mat-dialog-actions align="end">
     <button mat-raised-button color="warn" (click)="onClose()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" cdkFocusInitial>Crete</button>
+    <button mat-raised-button color="primary" type="submit" cdkFocusInitial>Guardar</button>
   </mat-dialog-actions>
 </form>

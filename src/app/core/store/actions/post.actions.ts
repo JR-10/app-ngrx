@@ -1,6 +1,8 @@
 import { createAction, props } from "@ngrx/store";
 import { Post } from "../../../domain/models/post/post.model";
+import { PostDTO } from "../../../domain/models/post/post.dto";
 
+// Load Post
 export const loadPost = createAction(
   '[Post] Load Post',
 );
@@ -15,6 +17,23 @@ export const loadPostFailure = createAction(
   props<{ payload: Error }>()
 );
 
+// Create Post
+export const createPost = createAction(
+  '[Post] Creste Post',
+  props<{ payload: PostDTO }>()
+);
+
+export const createPostSuccess = createAction(
+  '[Post] Create Post Success',
+  props<{ payload: Post }>()
+);
+
+export const createPostFailure = createAction(
+  '[Post] Create Post Failure',
+  props<{ payload: Error }>()
+);
+
+// Delete Post
 export const deletePost = createAction(
   '[Post] Delete Post',
   props<{ payload: number }>()

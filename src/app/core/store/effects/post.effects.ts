@@ -5,14 +5,17 @@ import * as PostActions from '../actions/post.actions';
 import { of } from 'rxjs';
 import { GetPostUsecase } from '../../../domain/usecase/post/get-post.usecase';
 import { DeletePostUsecase } from '../../../domain/usecase/post/delete-post.usecase';
+import { CreatePostUsecase } from '../../../domain/usecase/post/create-post.usecase';
 
 @Injectable()
 export class PostEffects {
   constructor(
     private actions$: Actions,
     private getPostUsecase: GetPostUsecase,
-    private deletePostUsecase: DeletePostUsecase
+    private deletePostUsecase: DeletePostUsecase,
+    private createPostUsecase: CreatePostUsecase,
   ) {}
+
 
   loadPost$ = createEffect(() =>
     this.actions$.pipe(
@@ -27,6 +30,24 @@ export class PostEffects {
       )
     )
   );
+
+
+  createPost$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PostActions.createPost),
+      switchMap((post) =>
+        this.createPostUsecase.createPost(post.payload).pipe(
+          map((data) =>
+            PostActions.createPostSuccess({ payload: data })
+          ),
+          catchError((error) =>
+            of(PostActions.createPostFailure({ payload: error }))
+          )
+        )
+      )
+    )
+  );
+
 
   deletePost$ = createEffect(() =>
     this.actions$.pipe(
@@ -43,4 +64,5 @@ export class PostEffects {
       )
     )
   );
+
 }
