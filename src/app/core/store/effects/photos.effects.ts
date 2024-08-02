@@ -4,6 +4,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import * as PothosActions from '../actions/photos.actions';
 import { of } from 'rxjs';
 import { GetPhotosUsecase } from '../../../domain/usecase/photos/get-photos.usecase';
+import { CreatePhotosUsecase } from '../../../domain/usecase/photos/create-photos.usecase';
 
 
 
@@ -14,6 +15,7 @@ export class PhotosEffects {
   constructor(
     private actions$: Actions,
     private getPhotosUsecase: GetPhotosUsecase,
+    private createPhotosUsecase: CreatePhotosUsecase,
   ) {}
 
 
@@ -49,6 +51,22 @@ export class PhotosEffects {
       })
     )
   );
+
+
+  createPhotos$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PothosActions.createPhotos),
+      switchMap((photos) =>
+        this.createPhotosUsecase.createPhotos(photos.photosDto).pipe(
+          map((data) => PothosActions.createPhotosSuccess({ dataPhotos: data })),
+          catchError((error) =>
+            of(PothosActions.createPhotosFailure({ error: error }))
+          )
+        )
+      )
+    )
+  );
+
 
 
 

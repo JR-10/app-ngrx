@@ -10,8 +10,8 @@ import { PhotosState } from '../../../../core/store/reducers/photos.reducers';
 import { select, Store } from '@ngrx/store';
 import { HelperService } from '../../../shared/helpers/helper.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { getPhotosByIdSuccess } from '../../../../core/store/actions/photos.actions';
-import { getPhotosEdit } from '../../../../core/store/selectors/photos.selectors';
+import { createPhotosSuccess, getPhotosByIdSuccess, loadPhotos } from '../../../../core/store/actions/photos.actions';
+import { getPhotosEdit, getPhotosList } from '../../../../core/store/selectors/photos.selectors';
 
 
 @Component({
@@ -75,9 +75,54 @@ export class ModalPhotosComponent implements OnInit {
     }
   }
 
-  onSubmit(): void {
-
+  getPhotos(): void {
+    this.store.dispatch(loadPhotos());
+    this.store.pipe(select(getPhotosList)).subscribe({
+      next: (resp: Array<Photos>) => {
+        this.dataPhotos = resp;
+      },
+      error: (_error: HttpErrorResponse) => {
+        this.helpers.toast({ icon: 'error', text: _error.message });
+      },
+    });
   }
 
+  getRandom(max: number) {
+    var num = Math.ceil(Math.random()*max);
+    return num;
+  }
 
+  onSubmit(): void {
+    if(this.formPhotos.valid) {
+      this.getPhotos();
+
+
+      if(this.idPhotos != null || this.idPhotos != undefined) {
+        this.bodySavePhotos = {
+          albumId: this.dataPhotosModal.albumId,
+          id: this.dataPhotosModal.id,
+          title: this.formPhotos.value.title,
+          url: this.formPhotos.value.body,
+          thumbnailUrl: this.formPhotos.value.body,
+        };
+        // this.store.dispatch(updatePhotosSuccess({payload: this.bodySavePhotos}));
+      } else {
+        const lastPhotos = this.dataPhotos[this.dataPhotos.length - 1];
+        this.bodySavePhotos = {
+          albumId: this.getRandom(100),
+          id: lastPhotos.id + 1,
+          title: this.formPhotos.value.title,
+          url: this.formPhotos.value.url,
+          thumbnailUrl: this.formPhotos.value.thumbnailUrl,
+        };
+        this.store.dispatch(createPhotosSuccess({dataPhotos: this.bodySavePhotos}));
+      }
+      this.onClose();
+      this.helpers.toast({ icon: 'success', text: 'Post saved successfully' });
+    }
+  }
+
+  onClose(): void {
+    this.dialogRef.close();
+  }
 }

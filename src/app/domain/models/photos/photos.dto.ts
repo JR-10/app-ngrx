@@ -1,3 +1,3 @@
 import { Photos } from "./photos.model";
 
-export interface PothosDTO extends Omit<Photos, 'id'> {}
+export interface PhotosDTO extends Omit<Photos, 'id'> {}

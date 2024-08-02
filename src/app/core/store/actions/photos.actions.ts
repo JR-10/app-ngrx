@@ -1,5 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 import { Photos } from "../../../domain/models/photos/photos.model";
+import { PhotosDTO } from "../../../domain/models/photos/photos.dto";
 
 // Load Photos
 export const loadPhotos = createAction(
@@ -32,3 +33,21 @@ export const getPothosByIdFailure = createAction(
   '[Photos] Get Photos ById Failure',
   props<{ error: Error }>()
 );
+
+
+// Create Photos
+export const createPhotos = createAction(
+  '[Photos] Create Photos',
+  props<{ photosDto: PhotosDTO }>()
+);
+
+export const createPhotosSuccess = createAction(
+  '[Photos] Create Photos Success',
+  props<{ dataPhotos: Photos }>()
+);
+
+export const createPhotosFailure = createAction(
+  '[Photos] Create Photos Failure',
+  props<{ error: Error }>()
+);
+

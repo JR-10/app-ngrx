@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { PhotosGateway } from '../../../domain/models/photos/gateways/photos.gateway';
 import { environment } from '../../../environments/environment';
 import { Photos } from '../../../domain/models/photos/photos.model';
+import { PhotosDTO } from '../../../domain/models/photos/photos.dto';
 
 
 @Injectable({
@@ -26,6 +27,10 @@ export class PhotosAdapterService extends PhotosGateway {
   }
 
   getPhotosById(id: number): Observable<Photos> {
+    throw new Error('Method not implemented.');
+  }
+
+  createPhotos(bodyCreate: PhotosDTO): Observable<Photos> {
     throw new Error('Method not implemented.');
   }
 

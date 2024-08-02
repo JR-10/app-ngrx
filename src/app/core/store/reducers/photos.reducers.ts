@@ -49,4 +49,15 @@ export const photosReducer = createReducer(
   }),
 
 
+  // Create post
+  on(PhotosActions.createPhotosSuccess, (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      data: action.dataPhotos
+    };
+  }),
+
+
+
 );
