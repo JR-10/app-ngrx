@@ -1,16 +1,20 @@
 import { Injectable } from "@angular/core";
-import { PothosGateway } from "../../models/photos/gateways/photos.gateway";
+import { PhotosGateway } from "../../models/photos/gateways/photos.gateway";
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class GetPothosUsecase {
+export class GetPhotosUsecase {
 
-  constructor(private pothosGateway: PothosGateway) {}
+  constructor(private photosGateway: PhotosGateway) {}
 
-  getPost() {
-    return this.pothosGateway.getPhotos()
+  getPhotos() {
+    return this.photosGateway.getPhotos()
+  }
+
+  getPhotosById(id: number) {
+    return this.photosGateway.getPhotosById(id)
   }
 
 }

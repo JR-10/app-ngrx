@@ -13,7 +13,7 @@ export const routes: Routes = [
 
   {
     path: 'photos',
-    loadComponent: () => import('../UI/pages/photos/photos.component').then(m => m.PhotosComponent)
+    loadComponent: () => import('../UI/pages/photos/list-photos/photos.component').then(m => m.PhotosComponent)
   },
   {
     path: '',

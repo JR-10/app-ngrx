@@ -15,7 +15,7 @@ import { provideEffects } from '@ngrx/effects';
 import { PostEffects } from '../core/store/effects/post.effects';
 import { PhotosEffects } from '../core/store/effects/photos.effects';
 import { PhotosAdapterService } from '../infrastructure/driven-adapter/photos-adapter/photos-adapter.service';
-import { PothosGateway } from '../domain/models/photos/gateways/photos.gateway';
+import { PhotosGateway } from '../domain/models/photos/gateways/photos.gateway';
 
 
 
@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimationsAsync(),
     { provide: PostGateway, useClass: PostAdapterService },
-    { provide: PothosGateway, useClass: PhotosAdapterService },
+    { provide: PhotosGateway, useClass: PhotosAdapterService },
     provideStore(),
     provideState({name: 'post', reducer: postReducer}),
     provideState({name: 'photos', reducer: photosReducer}),

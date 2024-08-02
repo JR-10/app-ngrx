@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PothosGateway } from '../../../domain/models/photos/gateways/photos.gateway';
+import { PhotosGateway } from '../../../domain/models/photos/gateways/photos.gateway';
 import { environment } from '../../../environments/environment';
 import { Photos } from '../../../domain/models/photos/photos.model';
 
@@ -9,7 +9,7 @@ import { Photos } from '../../../domain/models/photos/photos.model';
 @Injectable({
   providedIn: 'root'
 })
-export class PhotosAdapterService extends PothosGateway {
+export class PhotosAdapterService extends PhotosGateway {
 
   private _apiUrl: string;
 
@@ -23,6 +23,10 @@ export class PhotosAdapterService extends PothosGateway {
   getPhotos(): Observable<Array<Photos>> {
     const url = `${this._apiUrl}`;
     return this.http.get<Array<Photos>>(url);
+  }
+
+  getPhotosById(id: number): Observable<Photos> {
+    throw new Error('Method not implemented.');
   }
 
 }

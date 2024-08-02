@@ -1,24 +1,34 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PostState } from '../../../core/store/reducers/post.reducers';
+import { PostState } from '../../../../core/store/reducers/post.reducers';
 import { select, Store } from '@ngrx/store';
-import { Photos } from '../../../domain/models/photos/photos.model';
+import { Photos } from '../../../../domain/models/photos/photos.model';
 import { Observable } from 'rxjs';
-import { loadPhotos } from '../../../core/store/actions/photos.actions';
+import { loadPhotos } from '../../../../core/store/actions/photos.actions';
 import { HttpErrorResponse } from '@angular/common/http';
-import { selectPhotos } from '../../../core/store/selectors/photos.selectors';
-
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { HelperService } from '../../shared/helpers/helper.service';
+import { HelperService } from '../../../shared/helpers/helper.service';
+import { ModalPhotosComponent } from '../modal-photos/modal-photos.component';
+import { MatDialog } from '@angular/material/dialog';
+import { getPhotosList } from '../../../../core/store/selectors/photos.selectors';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-photos',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatButtonModule
+  ],
   templateUrl: './photos.component.html',
   styleUrl: './photos.component.scss'
 })
@@ -35,8 +45,9 @@ export class PhotosComponent implements OnInit {
   constructor(
     private store: Store<PostState>,
     private  helpers: HelperService,
+    public dialog: MatDialog,
   ) {
-    this.photosList$ = this.store.pipe(select(selectPhotos));
+    this.photosList$ = this.store.pipe(select(getPhotosList));
   }
 
   ngOnInit(): void {
@@ -70,7 +81,12 @@ export class PhotosComponent implements OnInit {
     }
   }
 
-  openDialogPhotos(row: any): void {
+  openDialogPhotos(photos?: Photos): void {
+    this.dialog.open(ModalPhotosComponent, {
+      data : photos ? photos : null,
+      width: '500px',
+      disableClose: true,
+    });
   }
 
   deletePhotos(row: any): void {
