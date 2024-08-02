@@ -44,24 +44,12 @@ export class ModalPostComponent implements OnInit {
     public dialogRef: MatDialogRef<ModalPostComponent>,
     @Inject(MAT_DIALOG_DATA) public dataPostModal: Post,
   ) {
+    this.idPost = this.dataPostModal?.id;
     this.loadForm();
   }
 
   ngOnInit(): void {
-    this.idPost = this.dataPostModal?.id;
-    if (this.idPost != null || this.idPost != undefined) {
-      this.titleModal = 'Edit Post';
-      this.store.dispatch(getPostByIdSuccess({payload: this.dataPostModal}));
-      this.store.pipe(select(getPostEdit)).subscribe({
-        next: (resp: Post) => {
-          this.formPost?.setValue({ title: resp.title, body: resp.body });
-        },
-        error: (_error: HttpErrorResponse) => {
-        },
-      });
-    }
-
-
+    this.getPostById();
   }
 
   loadForm(): void {
@@ -72,6 +60,20 @@ export class ModalPostComponent implements OnInit {
   }
 
 
+  getPostById(): void {
+    if (this.idPost != null || this.idPost != undefined) {
+      this.titleModal = 'Edit Post';
+      this.store.dispatch(getPostByIdSuccess({payload: this.dataPostModal}));
+      this.store.pipe(select(getPostEdit)).subscribe({
+        next: (resp: Post) => {
+          this.formPost?.setValue({ title: resp.title, body: resp.body });
+        },
+        error: (_error: HttpErrorResponse) => {
+          this.helpers.toast({ icon: 'error', text: _error.message });
+        },
+      });
+    }
+  }
 
   getPost(): void {
     this.store.dispatch(loadPost());
@@ -80,6 +82,7 @@ export class ModalPostComponent implements OnInit {
         this.dataPost = resp;
       },
       error: (_error: HttpErrorResponse) => {
+        this.helpers.toast({ icon: 'error', text: _error.message });
       },
     });
   }
