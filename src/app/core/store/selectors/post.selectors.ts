@@ -4,16 +4,10 @@ import { PostState } from '../reducers/post.reducers';
 export const selectPostFeature = createFeatureSelector<PostState>('post');
 
 
-export const selectPost = createSelector(
-  selectPostFeature,
-  (state: PostState) => state.data
-);
+export const getPostList = createSelector(selectPostFeature, (state: PostState) => {
+  return state.data;
+})
 
-export const selectPostError = createSelector(
-  selectPostFeature,
-  (state: PostState) => state.error
-);
-
-
-
-
+export const getPostEdit = createSelector(selectPostFeature, (state: PostState) => {
+  return state.editdata;
+})

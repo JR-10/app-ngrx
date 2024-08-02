@@ -13,4 +13,8 @@ export class GetPostUsecase {
     return this.postGateway.getPost()
   }
 
+  getPostById(id: number) {
+    return this.postGateway.getPostById(id)
+  }
+
 }

@@ -5,12 +5,19 @@ import { Post } from "../../../domain/models/post/post.model";
 
 export interface PostState {
   data: any;
+  editdata: Post;
   loading: boolean;
   error: any;
 }
 
 export const initialPostState: PostState = {
   data: [],
+  editdata : {
+    userId: 0,
+    id: 0,
+    title: "",
+    body: ""
+  },
   loading: false,
   error: null
 };
@@ -18,36 +25,60 @@ export const initialPostState: PostState = {
 
 export const postReducer = createReducer(
   initialPostState,
+
   // Load post
-  on(PostActions.loadPost, state => {
-    return { ...state, loading: true };
+  on(PostActions.loadPostSuccess, (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      data: action.payload,
+      editdata: {
+        userId: 0,
+        id: 0,
+        title: "",
+        body: ""
+      }
+    };
   }),
-  on(PostActions.loadPostSuccess, (state, {payload}) => {
-    return  { ...state, loading: false , data: payload};
+
+
+  // Get post by id
+  on(PostActions.getPostByIdSuccess, (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      editdata: action.payload
+    };
   }),
-  on(PostActions.loadPostFailure, (state, { payload }) => {
-    return { ...state, loading: false, payload: payload};
-  }),
+
 
   // Create post
-  on(PostActions.createPost, state => {
-    return {...state, loading: true};
-  }),
-  on(PostActions.createPostSuccess, (state, {payload}) => {
-    return {...state, loading: false, data: payload};
-  }),
-  on(PostActions.createPostFailure, (state, { payload }) => {
-    return { ...state, loading: false, payload: payload};
+  on(PostActions.createPostSuccess, (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      data: action.payload
+    };
   }),
 
+
+  // Update post
+  on(PostActions.updatePostSuccess, (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      data: action.payload
+    };
+  }),
+
+
   // Delete post
-  on(PostActions.deletePost, state => {
-    return {...state, loading: true};
+  on(PostActions.deletePostSuccess, (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      data: state.data.filter((post: Post) => post.id !== action.payload)};
   }),
-  on(PostActions.deletePostSuccess, (state, {payload}) => {
-    return {...state, loading: false, data: state.data.filter((post: Post) => post.id !== payload)};
-  }),
-  on(PostActions.deletePostFailure, (state, { payload }) => {
-    return { ...state, loading: false, payload: payload};
-  }),
+
 );

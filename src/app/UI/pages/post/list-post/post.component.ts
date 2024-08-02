@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Post } from '../../../../domain/models/post/post.model';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectPost } from '../../../../core/store/selectors/post.selectors';
+import { getPostList} from '../../../../core/store/selectors/post.selectors';
 import { deletePostSuccess, loadPost } from '../../../../core/store/actions/post.actions';
 import { PostState } from '../../../../core/store/reducers/post.reducers';
 
@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalPostComponent } from '../modal-post/modal-post.component';
 import { MatButtonModule } from '@angular/material/button';
+import { HelperService } from '../../../shared/helpers/helper.service';
 
 
 @Component({
@@ -39,9 +40,10 @@ export class PostComponent implements OnInit {
 
   constructor(
     private store: Store<PostState>,
+    private  helpers: HelperService,
     public dialog: MatDialog,
   ) {
-    this.postList$ = this.store.pipe(select(selectPost));
+    this.postList$ = this.store.pipe(select(getPostList));
     this.getPost();
   }
 
@@ -60,6 +62,7 @@ export class PostComponent implements OnInit {
         this.dataSource.paginator = this.dataPost.length > 0 ? this.paginator : null;
       },
       error: (_error: HttpErrorResponse) => {
+        this.helpers.toast({ icon: 'error', text: _error.error.message });
       },
     });
   }
@@ -93,11 +96,7 @@ export class PostComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.store.dispatch(deletePostSuccess({ payload: id }));
-        Swal.fire({
-          title: "Deleted!",
-          text: "post has been deleted",
-          icon: "success"
-        });
+        this.helpers.toast({ icon: 'success', text: 'Post delete successfully' });
       }
     });
   }

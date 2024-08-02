@@ -25,7 +25,15 @@ export class PostAdapterService extends PostGateway {
     return this.http.get<Array<Post>>(url);
   }
 
+  getPostById(id: number): Observable<Post> {
+    throw new Error('Method not implemented.');
+  }
+
   createPost(bodyCreate: PostDTO): Observable<Post> {
+    throw new Error('Method not implemented.');
+  }
+
+  updatePost(id: number, bodyUpdate: PostDTO): Observable<Post> {
     throw new Error('Method not implemented.');
   }
 

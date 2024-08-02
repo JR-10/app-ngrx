@@ -6,14 +6,16 @@ import { of } from 'rxjs';
 import { GetPostUsecase } from '../../../domain/usecase/post/get-post.usecase';
 import { DeletePostUsecase } from '../../../domain/usecase/post/delete-post.usecase';
 import { CreatePostUsecase } from '../../../domain/usecase/post/create-post.usecase';
+import { UpdatePostUsecase } from '../../../domain/usecase/post/update-post.usecase';
 
 @Injectable()
 export class PostEffects {
   constructor(
     private actions$: Actions,
     private getPostUsecase: GetPostUsecase,
-    private deletePostUsecase: DeletePostUsecase,
     private createPostUsecase: CreatePostUsecase,
+    private updatePostUsecase: UpdatePostUsecase,
+    private deletePostUsecase: DeletePostUsecase,
   ) {}
 
 
@@ -32,16 +34,46 @@ export class PostEffects {
   );
 
 
+  getPostById = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PostActions.getPostById),
+      switchMap((post) => {
+        return this.getPostUsecase.getPostById(post.payload).pipe(
+          map((data) => {
+            return PostActions.getPostByIdSuccess({ payload: data });
+          }),
+          catchError((error) =>
+            of(PostActions.getPostByIdFailure({ payload: error }))
+          )
+        );
+      })
+    )
+  );
+
+
   createPost$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PostActions.createPost),
       switchMap((post) =>
         this.createPostUsecase.createPost(post.payload).pipe(
-          map((data) =>
-            PostActions.createPostSuccess({ payload: data })
-          ),
+          map((data) => PostActions.createPostSuccess({ payload: data })),
           catchError((error) =>
             of(PostActions.createPostFailure({ payload: error }))
+          )
+        )
+      )
+    )
+  );
+
+
+  updatePost$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PostActions.updatePost),
+      switchMap((post) =>
+        this.updatePostUsecase.updatePost(post.payload.id, post.payload).pipe(
+          map((data) => PostActions.updatePostSuccess({ payload: data })),
+          catchError((error) =>
+            of(PostActions.updatePostFailure({ payload: error }))
           )
         )
       )
@@ -64,5 +96,4 @@ export class PostEffects {
       )
     )
   );
-
 }

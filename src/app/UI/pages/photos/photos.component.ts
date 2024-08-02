@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HelperService } from '../../shared/helpers/helper.service';
 
 @Component({
   selector: 'app-photos',
@@ -33,19 +34,20 @@ export class PhotosComponent implements OnInit {
 
   constructor(
     private store: Store<PostState>,
+    private  helpers: HelperService,
   ) {
     this.photosList$ = this.store.pipe(select(selectPhotos));
   }
 
   ngOnInit(): void {
-    this.getPhotosNgRx();
+    this.getPhotos();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
-  getPhotosNgRx(): void {
+  getPhotos(): void {
     this.store.dispatch(loadPhotos());
     this.photosList$.subscribe({
       next: (resp: Array<Photos>) => {
@@ -54,6 +56,7 @@ export class PhotosComponent implements OnInit {
         this.dataSource.paginator = this.dataPhotos.length > 0 ? this.paginator : null;
       },
       error: (_error: HttpErrorResponse) => {
+        this.helpers.toast({ icon: 'error', text: _error.error.message });
       },
     });
   }
@@ -68,10 +71,8 @@ export class PhotosComponent implements OnInit {
   }
 
   openDialogPhotos(row: any): void {
-    console.log('Valor de la fila', row);
   }
 
   deletePhotos(row: any): void {
-    console.log('Valor de la fila', row);
   }
 }

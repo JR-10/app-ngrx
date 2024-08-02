@@ -17,9 +17,27 @@ export const loadPostFailure = createAction(
   props<{ payload: Error }>()
 );
 
+
+// Get Post By Id
+export const getPostById = createAction(
+  '[Post] Get Post ById',
+  props<{ payload: number }>()
+);
+
+export const getPostByIdSuccess = createAction(
+  '[Post] Get Post ById Success',
+  props<{ payload: Post }>()
+);
+
+export const getPostByIdFailure = createAction(
+  '[Post] Get Post ById Failure',
+  props<{ payload: Error }>()
+);
+
+
 // Create Post
 export const createPost = createAction(
-  '[Post] Creste Post',
+  '[Post] Create Post',
   props<{ payload: PostDTO }>()
 );
 
@@ -32,6 +50,24 @@ export const createPostFailure = createAction(
   '[Post] Create Post Failure',
   props<{ payload: Error }>()
 );
+
+
+// Update Post
+export const updatePost = createAction(
+  '[Post] Update Post',
+  props<{ payload: Post }>()
+);
+
+export const updatePostSuccess = createAction(
+  '[Post] Update Post Success',
+  props<{ payload: Post }>()
+);
+
+export const updatePostFailure = createAction(
+  '[Post] Update Post Failure',
+  props<{ payload: Error }>()
+);
+
 
 // Delete Post
 export const deletePost = createAction(

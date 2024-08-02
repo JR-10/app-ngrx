@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -7,10 +7,11 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { select, Store } from '@ngrx/store';
 import { PostState } from '../../../../core/store/reducers/post.reducers';
-import { createPost, createPostSuccess, loadPost } from '../../../../core/store/actions/post.actions';
+import { createPostSuccess, getPostByIdSuccess, loadPost, updatePostSuccess } from '../../../../core/store/actions/post.actions';
 import { Post } from '../../../../domain/models/post/post.model';
-import { selectPost } from '../../../../core/store/selectors/post.selectors';
+import { getPostEdit, getPostList } from '../../../../core/store/selectors/post.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HelperService } from '../../../shared/helpers/helper.service';
 
 @Component({
   selector: 'app-modal-post',
@@ -27,37 +28,54 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './modal-post.component.html',
   styleUrl: './modal-post.component.scss'
 })
-export class ModalPostComponent {
+export class ModalPostComponent implements OnInit {
 
   titleModal = 'Create Post';
   idPost!: number;
-  formCreatePost!: FormGroup;
+  formPost!: FormGroup;
   dataPost: Array<Post> = [];
+  bodySavePost!: Post;
 
 
   constructor(
     private store: Store<PostState>,
     private fb: FormBuilder,
+    private  helpers: HelperService,
     public dialogRef: MatDialogRef<ModalPostComponent>,
     @Inject(MAT_DIALOG_DATA) public dataPostModal: Post,
   ) {
-    this.idPost = this.dataPostModal?.id;
-    if (this.idPost != null && this.idPost != undefined) {
-      this.titleModal = 'Edit Post';
-    }
     this.loadForm();
   }
 
+  ngOnInit(): void {
+    this.idPost = this.dataPostModal?.id;
+    if (this.idPost != null || this.idPost != undefined) {
+      this.titleModal = 'Edit Post';
+      this.store.dispatch(getPostByIdSuccess({payload: this.dataPostModal}));
+      this.store.pipe(select(getPostEdit)).subscribe({
+        next: (resp: Post) => {
+          this.formPost?.setValue({ title: resp.title, body: resp.body });
+        },
+        error: (_error: HttpErrorResponse) => {
+        },
+      });
+    }
+
+
+  }
+
   loadForm(): void {
-    this.formCreatePost = this.fb.group({
-      title: ['', [Validators.required]],
+    this.formPost = this.fb.group({
+      title: ['', Validators.required],
       body: ['', Validators.required],
     });
   }
 
+
+
   getPost(): void {
     this.store.dispatch(loadPost());
-    this.store.pipe(select(selectPost)).subscribe({
+    this.store.pipe(select(getPostList)).subscribe({
       next: (resp: Array<Post>) => {
         this.dataPost = resp;
       },
@@ -73,19 +91,30 @@ export class ModalPostComponent {
   }
 
   onSubmit(): void {
-    if(this.formCreatePost.valid) {
+    if(this.formPost.valid) {
       this.getPost();
-      console.log('@@@@ valor formulario: ', this.formCreatePost.value);
-      const lastPost = this.dataPost[this.dataPost.length - 1];
-      let bodyCreatePost: Post = {
-        userId: this.getRandom(10),
-        id: lastPost.id + 1,
-        title: this.formCreatePost.value.title,
-        body: this.formCreatePost.value.body
-      };
-      console.log('Valor Body Create: ', bodyCreatePost);
-      this.store.dispatch(createPostSuccess({payload: bodyCreatePost}));
+
+
+      if(this.idPost != null || this.idPost != undefined) {
+        this.bodySavePost = {
+          userId: this.dataPostModal.userId,
+          id: this.dataPostModal.id,
+          title: this.formPost.value.title,
+          body: this.formPost.value.body
+        };
+        this.store.dispatch(updatePostSuccess({payload: this.bodySavePost}));
+      } else {
+        const lastPost = this.dataPost[this.dataPost.length - 1];
+        this.bodySavePost = {
+          userId: this.getRandom(10),
+          id: lastPost.id + 1,
+          title: this.formPost.value.title,
+          body: this.formPost.value.body
+        };
+        this.store.dispatch(createPostSuccess({payload: this.bodySavePost}));
+      }
       this.onClose();
+      this.helpers.toast({ icon: 'success', text: 'Post saved successfully' });
     }
   }
 
